@@ -2,25 +2,34 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
-// Vector path for luxury serif M and E letters for 100% pixel-perfect deterministic rendering everywhere
-// Designed on a 512x512 canvas
+// Vector path for luxury serif M and E letters with Light & Dark mode support and small Gold detail
 const luxuryMeSvgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
     <style>
-      .bg { fill: #0d0d0d; }
-      .brand-pink { fill: #f472b6; }
+      .bg { fill: #0B0B0B; }
+      .brand-text { fill: #F3A6BE; }
+      .gold-dot { fill: #D4AF6A; }
+
+      @media (prefers-color-scheme: light) {
+        .bg { fill: #FAF8F5; }
+        .brand-text { fill: #171717; }
+        .gold-dot { fill: #C9A45C; }
+      }
     </style>
   </defs>
   <!-- Background Canvas -->
   <rect class="bg" width="512" height="512" rx="115" />
   
   <!-- Group for ME letterforms centered -->
-  <g class="brand-pink" transform="translate(48, 128) scale(1.6)">
+  <g transform="translate(48, 128) scale(1.6)">
     <!-- Letter M (Serif Luxury Style) -->
-    <path d="M 20 150 L 20 140 L 32 140 L 32 20 L 20 20 L 20 10 L 65 10 L 65 20 L 52 20 L 52 110 L 105 10 L 120 10 L 172 110 L 172 20 L 160 20 L 160 10 L 205 10 L 205 20 L 192 20 L 192 140 L 205 140 L 205 150 L 168 150 L 168 140 L 180 140 L 180 40 L 128 145 L 112 145 L 60 40 L 60 140 L 72 140 L 72 150 Z" />
+    <path class="brand-text" d="M 20 150 L 20 140 L 32 140 L 32 20 L 20 20 L 20 10 L 65 10 L 65 20 L 52 20 L 52 110 L 105 10 L 120 10 L 172 110 L 172 20 L 160 20 L 160 10 L 205 10 L 205 20 L 192 20 L 192 140 L 205 140 L 205 150 L 168 150 L 168 140 L 180 140 L 180 40 L 128 145 L 112 145 L 60 40 L 60 140 L 72 140 L 72 150 Z" />
 
     <!-- Letter E (Serif Luxury Style) -->
-    <path d="M 215 150 L 215 140 L 228 140 L 228 20 L 215 20 L 215 10 L 285 10 L 285 42 L 273 42 L 270 22 L 248 22 L 248 72 L 275 72 L 275 84 L 248 84 L 248 138 L 275 138 L 278 118 L 290 118 L 290 150 Z" />
+    <path class="brand-text" d="M 215 150 L 215 140 L 228 140 L 228 20 L 215 20 L 215 10 L 285 10 L 285 42 L 273 42 L 270 22 L 248 22 L 248 72 L 275 72 L 275 84 L 248 84 L 248 138 L 275 138 L 278 118 L 290 118 L 290 150 Z" />
+
+    <!-- Small Gold Jewelry Detail Dot -->
+    <circle class="gold-dot" cx="304" cy="142" r="8" />
   </g>
 </svg>`;
 
@@ -49,7 +58,7 @@ async function generate() {
   fs.writeFileSync(path.join(publicDir, "favicon.ico"), png32);
   fs.writeFileSync(path.join(appDir, "favicon.ico"), png32);
 
-  console.log("✨ Luxury vector ME favicons generated successfully!");
+  console.log("✨ Updated Light & Dark ME luxury favicons successfully!");
 }
 
 generate().catch(console.error);

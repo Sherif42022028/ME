@@ -11,29 +11,36 @@ const config: Config = {
     extend: {
       colors: {
         me: {
-          black: "#0d0d0d",
-          dark: "#141414",
-          card: "#1a1a1a",
-          border: "#2a2a2a",
-          white: "#ffffff",
-          offwhite: "#faf9f6",
-          softpink: "#fce7f3",
-          pink: "#f472b6",
-          pinkdeep: "#db2777",
-          gold: "#d4af37",
-          gray: {
-            50: "#f9fafb",
-            100: "#f3f4f6",
-            200: "#e5e7eb",
-            300: "#d1d5db",
-            400: "#9ca3af",
-            500: "#6b7280",
-            600: "#4b5563",
-            700: "#374151",
-            800: "#1f2937",
-            900: "#111827",
-          }
-        }
+          // Dark Theme Identity
+          dark: {
+            bg: "#0B0B0B",
+            surface: "#151515",
+            pink: "#F3A6BE",
+            softpink: "#F8CBD8",
+            text: "#FFFFFF",
+            subtext: "#B8B8B8",
+            gold: "#D4AF6A",
+          },
+          // Light Theme Identity
+          light: {
+            bg: "#FAF8F5",
+            surface: "#FFFFFF",
+            subsurface: "#F5F0EB",
+            pink: "#E99AB4",
+            softpink: "#F4C7D3",
+            text: "#171717",
+            subtext: "#66615D",
+            gold: "#C9A45C",
+            softgold: "#E3D1A7",
+          },
+          // Shared Accents
+          pink: "#F3A6BE",
+          lightpink: "#E99AB4",
+          softpink: "#F8CBD8",
+          gold: "#D4AF6A",
+          lightgold: "#C9A45C",
+          softgold: "#E3D1A7",
+        },
       },
       fontFamily: {
         serif: ["var(--font-cormorant)", "Cormorant Garamond", "Georgia", "serif"],

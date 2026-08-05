@@ -23,24 +23,24 @@ export default function FAQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-[#faf9f6] flex flex-col font-sans selection:bg-[#f472b6] selection:text-black">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0B0B0B] text-[#171717] dark:text-[#faf9f6] flex flex-col font-sans selection:bg-[#E99AB4] dark:selection:bg-[#F3A6BE] selection:text-black transition-colors duration-200">
       <Navbar />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 md:px-8 py-16 space-y-10">
         <div>
-          <span className="text-xs font-mono font-bold uppercase text-[#f472b6] tracking-widest">
+          <span className="text-xs font-mono font-bold uppercase text-[#E99AB4] dark:text-[#F3A6BE] tracking-widest">
             Frequently Asked Questions
           </span>
-          <h1 className="font-serif text-4xl font-bold text-white tracking-wide mt-1">
+          <h1 className="font-serif text-4xl font-bold text-[#171717] dark:text-white tracking-wide mt-1">
             FAQ & Shopping Assistance
           </h1>
         </div>
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <div key={idx} className="p-6 rounded-2xl bg-[#141414] border border-[#262626] space-y-2">
-              <h3 className="text-sm font-bold text-white">{faq.q}</h3>
-              <p className="text-xs text-[#9ca3af] leading-relaxed">{faq.a}</p>
+            <div key={idx} className="p-6 rounded-2xl bg-white dark:bg-[#141414] border border-[#E8E3DD] dark:border-[#262626] space-y-2 shadow-xs">
+              <h3 className="text-sm font-bold text-[#171717] dark:text-white">{faq.q}</h3>
+              <p className="text-xs text-[#66615D] dark:text-[#9ca3af] leading-relaxed">{faq.a}</p>
             </div>
           ))}
         </div>

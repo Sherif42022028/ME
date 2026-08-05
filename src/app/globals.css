@@ -9,42 +9,91 @@
   --font-manrope: 'Manrope', sans-serif;
 }
 
+/* Default Dark Mode Theme CSS Variables */
+.dark {
+  --me-bg: #0B0B0B;
+  --me-surface: #151515;
+  --me-surface-sub: #1f1f1f;
+  --me-text: #FFFFFF;
+  --me-text-muted: #B8B8B8;
+  --me-[#6b7280]: #888888;
+  --me-pink: #F3A6BE;
+  --me-pink-soft: #F8CBD8;
+  --me-gold: #D4AF6A;
+  --me-gold-soft: #E3D1A7;
+  --me-border: #222222;
+  --me-border-hover: #333333;
+  color-scheme: dark;
+}
+
+/* Light Mode Theme CSS Variables (Warm White + Pink + Gold) */
+html:not(.dark), .light {
+  --me-bg: #FAF8F5;
+  --me-surface: #FFFFFF;
+  --me-surface-sub: #F5F0EB;
+  --me-text: #171717;
+  --me-text-muted: #66615D;
+  --me-[#6b7280]: #88837E;
+  --me-pink: #E99AB4;
+  --me-pink-soft: #F4C7D3;
+  --me-gold: #C9A45C;
+  --me-gold-soft: #E3D1A7;
+  --me-border: #E8E3DD;
+  --me-border-hover: #D6CFB9;
+  color-scheme: light;
+}
+
 body {
   font-family: var(--font-manrope);
-  background-color: #0d0d0d;
-  color: #faf9f6;
+  background-color: var(--me-bg);
+  color: var(--me-text);
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 h1, h2, h3, .font-serif {
   font-family: var(--font-cormorant);
 }
 
-/* Custom Scrollbar */
+/* Custom Luxury Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #141414;
+  background: var(--me-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: var(--me-border);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f472b6;
+  background: var(--me-pink);
 }
 
-.glass-panel {
-  background: rgba(20, 20, 20, 0.85);
+/* Editorial Utilities */
+.editorial-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A45C 50%, transparent);
+}
+
+.gold-accent-line {
+  width: 40px;
+  height: 1.5px;
+  background-color: #C9A45C;
+}
+
+.glass-panel-dark {
+  background: rgba(21, 21, 21, 0.85);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.glow-pink {
-  box-shadow: 0 0 25px -5px rgba(244, 114, 182, 0.25);
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 164, 92, 0.2);
 }

@@ -3,7 +3,6 @@ import { Footer } from "@/components/public/Footer";
 import { ProductCard } from "@/components/public/ProductCard";
 import { WhatsAppFloatingButton } from "@/components/public/WhatsAppFloatingButton";
 import { prisma } from "@/lib/prisma";
-import { Search, Filter } from "lucide-react";
 
 export const revalidate = 30;
 
@@ -46,29 +45,31 @@ export default async function PublicShopPage({
   ]);
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-[#faf9f6] flex flex-col font-sans selection:bg-[#f472b6] selection:text-black">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0B0B0B] text-[#171717] dark:text-[#faf9f6] flex flex-col font-sans selection:bg-[#E99AB4] dark:selection:bg-[#F3A6BE] selection:text-black transition-colors duration-200">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 py-10 space-y-8">
         <div>
-          <span className="text-xs font-mono font-bold uppercase text-[#f472b6] tracking-widest">
+          <span className="text-xs font-mono font-bold uppercase text-[#E99AB4] dark:text-[#F3A6BE] tracking-widest">
             Complete Catalog
           </span>
-          <h1 className="font-serif text-4xl font-bold text-white tracking-wide mt-1">
+          <h1 className="font-serif text-4xl font-bold text-[#171717] dark:text-white tracking-wide mt-1">
             Shop 1-of-1 Pre-Loved Archives
           </h1>
-          <p className="text-xs text-[#9ca3af] mt-1">
+          <p className="text-xs text-[#66615D] dark:text-[#9ca3af] mt-1">
             Browse our authenticated collection of pre-loved luxury dresses, bags, blazers, and footwear.
           </p>
         </div>
 
         {/* Filter Toolbar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-[#141414] border border-[#262626]">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-white dark:bg-[#141414] border border-[#E8E3DD] dark:border-[#262626] shadow-xs">
           <div className="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
             <a
               href="/shop"
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-                !categorySlug ? "bg-[#f472b6] text-black" : "text-[#9ca3af] hover:text-white"
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                !categorySlug
+                  ? "bg-[#171717] text-white dark:bg-[#F3A6BE] dark:text-black font-bold"
+                  : "text-[#66615D] dark:text-[#9ca3af] hover:text-[#171717] dark:hover:text-white"
               }`}
             >
               All Categories ({products.length})
@@ -77,8 +78,10 @@ export default async function PublicShopPage({
               <a
                 key={cat.id}
                 href={`/shop?category=${cat.slug}`}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-                  categorySlug === cat.slug ? "bg-[#f472b6] text-black" : "text-[#9ca3af] hover:text-white"
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                  categorySlug === cat.slug
+                    ? "bg-[#171717] text-white dark:bg-[#F3A6BE] dark:text-black font-bold"
+                    : "text-[#66615D] dark:text-[#9ca3af] hover:text-[#171717] dark:hover:text-white"
                 }`}
               >
                 {cat.name}
@@ -89,10 +92,10 @@ export default async function PublicShopPage({
 
         {/* Product Grid */}
         {products.length === 0 ? (
-          <div className="p-16 text-center text-[#9ca3af] space-y-3 bg-[#141414] rounded-2xl border border-[#262626]">
-            <p className="text-base font-semibold text-white">No products found matching your filter</p>
+          <div className="p-16 text-center text-[#66615D] dark:text-[#9ca3af] space-y-3 bg-white dark:bg-[#141414] rounded-2xl border border-[#E8E3DD] dark:border-[#262626]">
+            <p className="text-base font-semibold text-[#171717] dark:text-white">No products found matching your filter</p>
             <p className="text-xs">Try clearing category or search filters.</p>
-            <a href="/shop" className="inline-block text-xs font-bold text-[#f472b6] hover:underline pt-2">
+            <a href="/shop" className="inline-block text-xs font-bold text-[#E99AB4] dark:text-[#F3A6BE] hover:underline pt-2">
               Reset Filters
             </a>
           </div>
