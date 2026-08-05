@@ -274,7 +274,7 @@ async function main() {
       quote: "Fashion should carry history, grace, and an unforgettable story.",
       socialLinks: {
         instagram: "https://instagram.com/micaella",
-        facebook: "https://facebook.com/micaellaofficial",
+        facebook: "https://www.facebook.com/marketplace/profile/100036193924898/?product_id=1907082703308799",
         whatsapp: "https://wa.me/639999680628",
       },
       published: true,

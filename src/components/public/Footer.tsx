@@ -76,12 +76,12 @@ export function Footer() {
             </li>
             <li>
               <a
-                href="https://facebook.com/micaellaofficial"
+                href="https://www.facebook.com/marketplace/profile/100036193924898/?product_id=1907082703308799"
                 target="_blank"
                 rel="noreferrer"
                 className="hover:text-[#F3A6BE] transition-colors"
               >
-                Facebook
+                Facebook Marketplace
               </a>
             </li>
             <li>

@@ -70,6 +70,17 @@ export default function ContactPage() {
                   <span className="text-[#171717] dark:text-white">Makati City, Metro Manila, Philippines</span>
                 </div>
               </div>
+
+              <div className="flex items-center space-x-3 pt-2 border-t border-[#E8E3DD] dark:border-[#222222]">
+                <a
+                  href="https://www.facebook.com/marketplace/profile/100036193924898/?product_id=1907082703308799"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-semibold text-[#E99AB4] dark:text-[#F3A6BE] hover:underline"
+                >
+                  Visit ME Official Facebook Marketplace →
+                </a>
+              </div>
             </div>
           </div>
         </div>
