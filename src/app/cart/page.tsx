@@ -11,7 +11,7 @@ export default function CartPage() {
     price: 28500,
     size: "S / EU 36",
     color: "Black & Gold",
-    image: "https://images.unsplash.com/photo-1548624149-f1e4004944d1?w=800&q=80",
+    image: "/product/p1.jpg",
   };
 
   return (

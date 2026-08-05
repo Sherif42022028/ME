@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
-  const mainImage = product.images?.[0] || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80";
+  const mainImage = product.images?.[0] || "/product/p1.jpg";
 
   return (
     <div className="group flex flex-col h-full bg-[#111111] border border-[#222222] rounded-xl overflow-hidden hover:border-[#333333] transition-all">

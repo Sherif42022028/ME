@@ -49,7 +49,7 @@ export default async function ProductDetailPage({
           <div className="space-y-4">
             <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#141414] border border-[#262626]">
               <img
-                src={product.images[0] || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"}
+                src={product.images[0] || "/product/p1.jpg"}
                 alt={product.name}
                 className={`w-full h-full object-cover ${isSold ? "grayscale opacity-60" : ""}`}
               />
