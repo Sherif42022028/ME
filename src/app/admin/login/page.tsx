@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
             ME
           </h1>
           <p className="text-xs uppercase tracking-[0.25em] text-[#9ca3af] font-sans">
-            Micaela Ella
+            Mica Ella
           </p>
           <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[#f472b6]/10 border border-[#f472b6]/20 text-[#f472b6] text-[10px] uppercase font-mono tracking-wider font-semibold">
             <ShieldCheck className="w-3.5 h-3.5" />

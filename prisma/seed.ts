@@ -14,12 +14,12 @@ async function main() {
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
-      name: "Micaela Ella (Owner)",
+      name: "Mica Ella (Owner)",
       passwordHash,
       role: Role.ADMIN,
     },
     create: {
-      name: "Micaela Ella (Owner)",
+      name: "Mica Ella (Owner)",
       email: adminEmail,
       passwordHash,
       role: Role.ADMIN,
@@ -133,7 +133,7 @@ async function main() {
       name: "Silk Satin Corset Top in Champagne",
       slug: "silk-satin-corset-top-champagne",
       description: "Bespoke vintage satin corset with boning and lace-up back tie. Flattering hourglass silhouette.",
-      brand: "Micaela Ella Archive",
+      brand: "Mica Ella Archive",
       categoryId: categories[3].id,
       price: 4850,
       size: "XS / S",
@@ -265,16 +265,16 @@ async function main() {
   // 6. Founder Profile with /CEO pic.png
   await prisma.founderProfile.upsert({
     where: { id: "founder-micaela" },
-    update: { image: "/CEO pic.png" },
+    update: { name: "Mica Ella", bio: "Mica Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.", image: "/CEO pic.png" },
     create: {
       id: "founder-micaela",
-      name: "Micaela Ella",
-      bio: "Micaela Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.",
+      name: "Mica Ella",
+      bio: "Mica Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.",
       image: "/CEO pic.png",
       quote: "Fashion should carry history, grace, and an unforgettable story.",
       socialLinks: {
-        instagram: "https://instagram.com/micaelaella",
-        facebook: "https://facebook.com/micaelaellaofficial",
+        instagram: "https://instagram.com/micaella",
+        facebook: "https://facebook.com/micaellaofficial",
         whatsapp: "https://wa.me/639999680628",
       },
       published: true,

@@ -15,7 +15,7 @@ export function HeroSection() {
           {/* Small Label */}
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#f472b6]/10 border border-[#f472b6]/25 text-[#f472b6] text-xs font-mono uppercase font-bold tracking-[0.2em]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>ME — MICAELA ELLA</span>
+            <span>ME — MICA ELLA</span>
           </div>
 
           {/* Main Headline */}
@@ -75,7 +75,7 @@ export function HeroSection() {
                 FASHION EDITORIAL ARCHIVE
               </span>
               <p className="text-xs font-serif font-bold text-white tracking-wide">
-                Micaela Ella Signature Selection
+                Mica Ella Signature Selection
               </p>
             </div>
           </div>

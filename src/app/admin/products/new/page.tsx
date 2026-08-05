@@ -74,7 +74,7 @@ export default function NewProductPage() {
             Add New Product
           </h1>
           <p className="text-xs text-[#9ca3af] mt-0.5">
-            Create a luxury 1-of-1 pre-loved item listing for ME — Micaela Ella.
+            Create a luxury 1-of-1 pre-loved item listing for ME — Mica Ella.
           </p>
         </div>
       </div>

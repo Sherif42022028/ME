@@ -41,7 +41,7 @@ export function Navbar() {
             ME
           </span>
           <span className="block text-[9px] uppercase tracking-[0.3em] text-[#9ca3af] -mt-1 font-sans">
-            Micaela Ella
+            Mica Ella
           </span>
         </Link>
 

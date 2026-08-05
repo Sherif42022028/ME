@@ -17,7 +17,7 @@ export default function ContactPage() {
             Get In Touch
           </span>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-white tracking-wide">
-            Contact ME — Micaela Ella
+            Contact ME — Mica Ella
           </h1>
           <p className="text-xs text-[#9ca3af] max-w-md mx-auto">
             Have questions about a 1-of-1 archival piece, size measurements, or express delivery? We'd love to assist.
@@ -33,7 +33,7 @@ export default function ContactPage() {
               </div>
               <h3 className="text-lg font-bold text-white">Instant WhatsApp Concierge</h3>
               <p className="text-xs text-[#9ca3af]">
-                Chat directly with Micaela Ella and our styling team for instant product availability and sizing advice.
+                Chat directly with Mica Ella and our styling team for instant product availability and sizing advice.
               </p>
               <p className="text-sm font-mono font-bold text-[#25D366]">{whatsappNumber}</p>
             </div>

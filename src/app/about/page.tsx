@@ -19,7 +19,7 @@ export default async function AboutPage() {
             Brand Archive & Founder Story
           </span>
           <h1 className="font-serif text-4xl md:text-6xl font-bold text-white tracking-wide">
-            About ME — Micaela Ella
+            About ME — Mica Ella
           </h1>
           <p className="text-sm text-[#d1d5db] font-sans leading-relaxed">
             Redefining sustainable luxury and pre-loved archival fashion in the Philippines.
@@ -29,8 +29,8 @@ export default async function AboutPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center p-8 rounded-3xl bg-[#141414] border border-[#262626]">
           <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-[#2a2a2a]">
             <img
-              src={founder?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80"}
-              alt={founder?.name || "Micaela Ella"}
+              src={founder?.image || "/CEO pic.png"}
+              alt={founder?.name || "Mica Ella"}
               className="w-full h-full object-cover"
             />
           </div>
@@ -39,7 +39,7 @@ export default async function AboutPage() {
             <div>
               <span className="text-xs font-mono text-[#f472b6] uppercase font-bold tracking-wider">Founder & Curator</span>
               <h2 className="font-serif text-3xl font-bold text-white tracking-wide mt-1">
-                {founder?.name || "Micaela Ella"}
+                {founder?.name || "Mica Ella"}
               </h2>
             </div>
 
@@ -48,7 +48,7 @@ export default async function AboutPage() {
             </blockquote>
 
             <p className="text-xs text-[#d1d5db] leading-relaxed whitespace-pre-wrap">
-              {founder?.bio || "Micaela Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines."}
+              {founder?.bio || "Mica Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines."}
             </p>
           </div>
         </div>

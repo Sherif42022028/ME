@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ME — Micaela Ella Admin Dashboard",
-  description: "Production-ready admin dashboard for ME Micaela Ella pre-loved fashion e-commerce.",
+  title: "ME — Mica Ella Admin Dashboard",
+  description: "Production-ready admin dashboard for ME Mica Ella pre-loved fashion e-commerce.",
 };
 
 export default function RootLayout({

@@ -89,7 +89,7 @@ export function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarProps) {
             </span>
             <div className="h-4 w-[1px] bg-[#333333]" />
             <span className="text-xs uppercase tracking-[0.25em] text-[#9ca3af]">
-              Micaela Ella
+              Mica Ella
             </span>
           </div>
           <p className="text-[10px] text-[#f472b6] uppercase tracking-wider mt-1 font-mono">

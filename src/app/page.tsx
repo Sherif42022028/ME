@@ -58,7 +58,7 @@ export default async function PublicHomePage() {
               "Fashion should carry history, grace, and an unforgettable story."
             </h2>
             <p className="text-xs uppercase tracking-[0.25em] text-[#f472b6] font-mono font-bold">
-              — Micaela Ella, Founder & Curator
+              — Mica Ella, Founder & Curator
             </p>
           </div>
         </section>

@@ -426,7 +426,7 @@ model Notification {
 
 model FounderProfile {
   id          String   @id @default(cuid())
-  name        String   @default("Micaela Ella")
+  name        String   @default("Mica Ella")
   bio         String
   image       String
   quote       String?

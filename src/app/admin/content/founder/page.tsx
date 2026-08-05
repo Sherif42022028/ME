@@ -9,9 +9,9 @@ export default function FounderCMSPage() {
   const [message, setMessage] = useState<string | null>(null);
 
   const [form, setForm] = useState({
-    name: "Micaela Ella",
-    bio: "Micaela Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+    name: "Mica Ella",
+    bio: "Mica Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.",
+    image: "/CEO pic.png",
     quote: "Fashion should carry history, grace, and an unforgettable story.",
     published: true,
   });
@@ -84,7 +84,7 @@ export default function FounderCMSPage() {
           <span>Founder Profile Management</span>
         </h1>
         <p className="text-xs text-[#9ca3af] mt-1">
-          Manage the public biography, editorial imagery, and brand quotes for <strong className="text-white">Micaela Ella</strong>.
+          Manage the public biography, editorial imagery, and brand quotes for <strong className="text-white">Mica Ella</strong>.
         </p>
       </div>
 

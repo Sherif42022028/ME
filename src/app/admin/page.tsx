@@ -99,7 +99,7 @@ export default function OverviewDashboardPage() {
             Dashboard Overview
           </h1>
           <p className="text-xs text-[#9ca3af] mt-1">
-            Real-time business performance for <strong className="text-white">ME — Micaela Ella</strong> calculated strictly from Neon PostgreSQL database records.
+            Real-time business performance for <strong className="text-white">ME — Mica Ella</strong> calculated strictly from Neon PostgreSQL database records.
           </p>
         </div>
 

@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Settings, Shield, CheckCircle2, Lock } from "lucide-react";
 
 export default function SettingsPage() {
-  const [storeName, setStoreName] = useState("ME — Micaela Ella");
+  const [storeName, setStoreName] = useState("ME — Mica Ella");
   const [currency, setCurrency] = useState("PHP (₱)");
-  const [adminEmail, setAdminEmail] = useState("micaela.ella.admin@gmail.com");
+  const [adminEmail, setAdminEmail] = useState("mica.ella.admin@gmail.com");
   const [saved, setSaved] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {

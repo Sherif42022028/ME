@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         data: {
           name: name || `Pre-Loved Archival Piece (${filenames[0]})`,
           slug,
-          brand: brand || "Micaela Ella Archive",
+          brand: brand || "Mica Ella Archive",
           categoryId: category,
           price: price ? parseFloat(price) : 12500,
           size: size || "M / EU 38",

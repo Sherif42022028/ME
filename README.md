@@ -1,6 +1,6 @@
-# ME — Micaela Ella Admin Dashboard & Neon Database Integration
+# ME — Mica Ella Admin Dashboard & Neon Database Integration
 
-Production-ready Admin Dashboard and Backend API for **ME — Micaela Ella**, a luxury pre-loved fashion e-commerce brand (Philippines market, PHP `₱` currency).
+Production-ready Admin Dashboard and Backend API for **ME — Mica Ella**, a luxury pre-loved fashion e-commerce brand (Philippines market, PHP `₱` currency).
 
 Built with **Next.js App Router**, **TypeScript**, **Tailwind CSS**, **Neon PostgreSQL**, **Prisma ORM**, **Zod**, **bcryptjs**, and **Recharts**.
 

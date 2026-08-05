@@ -16,7 +16,7 @@ export default function ReturnsPage() {
           </p>
           <h3 className="text-sm font-bold text-white uppercase pt-2">Lifetime Authenticity Money-Back Guarantee</h3>
           <p>
-            If any item purchased from ME — Micaela Ella is proven unauthentic by an accredited third-party authenticator, we issue a 100% full refund immediately.
+            If any item purchased from ME — Mica Ella is proven unauthentic by an accredited third-party authenticator, we issue a 100% full refund immediately.
           </p>
         </div>
       </main>

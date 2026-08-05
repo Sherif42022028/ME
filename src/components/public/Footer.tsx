@@ -14,14 +14,14 @@ export function Footer() {
               ME
             </h3>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#f472b6] font-sans font-semibold">
-              Micaela Ella
+              Mica Ella
             </p>
           </div>
           <p className="text-xs text-[#6b7280] leading-relaxed max-w-sm">
             Curated 1-of-1 pre-loved luxury fashion, vintage archival pieces, and authenticated designer collectibles in the Philippines.
           </p>
           <p className="text-[11px] text-[#555555] font-mono">
-            © 2026 ME — Micaela Ella. All rights reserved.
+            © 2026 ME — Mica Ella. All rights reserved.
           </p>
         </div>
 
