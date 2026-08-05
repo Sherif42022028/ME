@@ -5,30 +5,27 @@ import Link from "next/link";
 import {
   DollarSign,
   ShoppingBag,
-  Users,
-  Package,
-  ArrowRight,
-  AlertTriangle,
-  RefreshCw,
   TrendingUp,
-  Download,
+  Package,
+  RefreshCw,
+  AlertTriangle,
+  ArrowRight,
+  PieChart,
+  Activity,
 } from "lucide-react";
 import { KpiCard } from "@/components/admin/KpiCard";
-import { RevenueChart } from "@/components/admin/RevenueChart";
-import { ConversionFunnel } from "@/components/admin/ConversionFunnel";
-import { formatPHP, downloadCSV } from "@/lib/utils";
+import { formatPHP } from "@/lib/utils";
 
 export default function OverviewDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [rangePreset, setRangePreset] = useState("30d");
   const [data, setData] = useState<any>(null);
 
-  const fetchStats = async (range: string = rangePreset) => {
+  const fetchStats = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/stats?range=${range}`);
+      const res = await fetch("/api/admin/stats");
       const json = await res.json();
       if (json.success) {
         setData(json);
@@ -44,18 +41,8 @@ export default function OverviewDashboardPage() {
   };
 
   useEffect(() => {
-    fetchStats(rangePreset);
-  }, [rangePreset]);
-
-  const handleExportCSV = async () => {
-    try {
-      const res = await fetch("/api/admin/export?type=orders");
-      const text = await res.text();
-      downloadCSV(text, `ME_Orders_Export_${Date.now()}.csv`);
-    } catch (err) {
-      console.error("Export error:", err);
-    }
-  };
+    fetchStats();
+  }, []);
 
   if (loading && !data) {
     return (
@@ -66,7 +53,7 @@ export default function OverviewDashboardPage() {
             <div key={i} className="h-32 bg-[#141414] border border-[#222222] rounded-xl" />
           ))}
         </div>
-        <div className="h-80 bg-[#141414] border border-[#222222] rounded-xl" />
+        <div className="h-48 bg-[#141414] border border-[#222222] rounded-xl" />
       </div>
     );
   }
@@ -78,7 +65,7 @@ export default function OverviewDashboardPage() {
         <h3 className="text-lg font-bold text-white">Database Error</h3>
         <p className="text-xs text-rose-300 max-w-md mx-auto">{error}</p>
         <button
-          onClick={() => fetchStats(rangePreset)}
+          onClick={fetchStats}
           className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-bold inline-flex items-center space-x-2"
         >
           <RefreshCw className="w-3.5 h-3.5" />
@@ -89,123 +76,184 @@ export default function OverviewDashboardPage() {
   }
 
   const overview = data?.overview;
+  const financial = overview?.financial;
+  const orders = overview?.orders;
+  const checkout = overview?.checkout;
+  const products = overview?.products;
 
   return (
     <div className="space-y-8">
-      {/* Top Header & Quick Actions */}
+      {/* Dashboard Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="font-serif text-3xl font-bold text-white tracking-wide">
-            Dashboard Overview
+            ME ADMIN
           </h1>
           <p className="text-xs text-[#9ca3af] mt-1">
-            Real-time business performance for <strong className="text-white">ME — Mica Ella</strong> calculated strictly from Neon PostgreSQL database records.
+            Real business financials & order status calculated from Neon PostgreSQL.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={() => fetchStats(rangePreset)}
-            className="p-2 bg-[#181818] border border-[#2a2a2a] hover:border-[#333333] text-[#9ca3af] hover:text-white rounded-lg text-xs transition-colors"
-            title="Refresh Data"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-[#f472b6]" : ""}`} />
-          </button>
-          <button
-            onClick={handleExportCSV}
-            className="px-3.5 py-2 bg-[#f472b6] hover:bg-[#db2777] text-black font-bold text-xs rounded-lg transition-colors flex items-center space-x-2"
-          >
-            <Download className="w-4 h-4" />
-            <span>Export Orders CSV</span>
-          </button>
-        </div>
+        <button
+          onClick={fetchStats}
+          className="px-3.5 py-2 bg-[#181818] border border-[#2a2a2a] hover:border-[#333333] text-[#9ca3af] hover:text-white rounded-lg text-xs transition-colors flex items-center space-x-2 self-start sm:self-auto"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-[#f472b6]" : ""}`} />
+          <span>Refresh Metrics</span>
+        </button>
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* Main KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
-          title="This Month Revenue"
-          value={formatPHP(overview?.revenue?.month || 0)}
-          subValue={`Today: ${formatPHP(overview?.revenue?.today || 0)}`}
-          growth={overview?.revenue?.growthPercentage}
+          title="Revenue"
+          value={formatPHP(financial?.revenue || 0)}
+          subValue="Confirmed Sales Only"
           icon={DollarSign}
         />
         <KpiCard
-          title="Active Orders"
-          value={overview?.orders?.total || 0}
-          subValue={`${overview?.orders?.pending || 0} pending • ${overview?.orders?.shipped || 0} shipped`}
+          title="Sales"
+          value={orders?.confirmedSales || 0}
+          subValue={`${orders?.pendingConfirmation || 0} pending confirmation`}
           icon={ShoppingBag}
         />
         <KpiCard
-          title="Total Customers"
-          value={overview?.customers?.total || 0}
-          subValue={`+${overview?.customers?.newThisMonth || 0} new this month`}
-          icon={Users}
+          title="Net Profit"
+          value={formatPHP(financial?.netProfit || 0)}
+          subValue={`Margin: ${financial?.profitMargin || 0}%`}
+          icon={TrendingUp}
         />
         <KpiCard
-          title="Available Inventory"
-          value={overview?.products?.available || 0}
-          subValue={`${overview?.products?.lowStock || 0} 1-of-1 low stock`}
+          title="Products"
+          value={products?.total || 0}
+          subValue="Catalog Active"
           icon={Package}
         />
       </div>
 
-      {/* Revenue Chart Section */}
-      <RevenueChart
-        data={data?.timeline?.chartData || []}
-        selectedRange={rangePreset}
-        onRangeChange={setRangePreset}
-        totalRevenue={data?.timeline?.totalRevenue || 0}
-        totalOrders={data?.timeline?.totalOrders || 0}
-        averageOrderValue={data?.timeline?.averageOrderValue || 0}
-      />
+      {/* Financial Model & Conversion Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Financial Breakdown */}
+        <div className="p-6 rounded-xl bg-[#141414] border border-[#262626] space-y-4">
+          <div className="flex items-center justify-between border-b border-[#222222] pb-3">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+              <PieChart className="w-4 h-4 text-[#f472b6]" />
+              <span>Financial Profit Model</span>
+            </h3>
+            <span className="text-[10px] font-mono uppercase text-[#9ca3af]">Neon DB</span>
+          </div>
 
-      {/* Conversion Funnel & Inventory Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <ConversionFunnel data={overview?.conversion} />
+          <div className="space-y-3 text-xs">
+            <div className="flex justify-between py-1.5 border-b border-[#1f1f1f]">
+              <span className="text-[#9ca3af]">Confirmed Revenue</span>
+              <span className="font-mono text-white font-bold">{formatPHP(financial?.revenue || 0)}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-[#1f1f1f]">
+              <span className="text-[#9ca3af]">Cost of Goods Sold (COGS)</span>
+              <span className="font-mono text-rose-400 font-semibold">− {formatPHP(financial?.cogs || 0)}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-[#1f1f1f]">
+              <span className="text-[#9ca3af]">Gross Profit</span>
+              <span className="font-mono text-emerald-400 font-bold">{formatPHP(financial?.grossProfit || 0)}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-[#1f1f1f]">
+              <span className="text-[#9ca3af]">Operating Expenses</span>
+              <span className="font-mono text-rose-400 font-semibold">− {formatPHP(financial?.operatingExpenses || 0)}</span>
+            </div>
+            <div className="flex justify-between py-2 border-t border-[#2a2a2a] text-sm font-bold">
+              <span className="text-white">Net Business Profit</span>
+              <span className="font-mono text-[#f472b6]">{formatPHP(financial?.netProfit || 0)}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Low Stock Alerts & Quick Navigation Widget */}
-        <div className="p-6 rounded-xl bg-[#141414] border border-[#262626] flex flex-col justify-between space-y-6">
+        {/* WhatsApp Checkout Conversion Funnel */}
+        <div className="p-6 rounded-xl bg-[#141414] border border-[#262626] space-y-4 flex flex-col justify-between">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-serif font-bold text-white flex items-center space-x-2">
-                <AlertTriangle className="w-4 h-4 text-[#f472b6]" />
-                <span>1-of-1 Inventory Alerts</span>
+            <div className="flex items-center justify-between border-b border-[#222222] pb-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+                <Activity className="w-4 h-4 text-[#25D366]" />
+                <span>WhatsApp Checkout Funnel</span>
               </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#f472b6]/20 text-[#f472b6] font-bold">
-                {overview?.products?.lowStock || 0} Low Stock
+              <span className="text-[10px] font-mono uppercase bg-[#25D366]/10 text-[#25D366] px-2 py-0.5 rounded font-bold">
+                WhatsApp Flow
               </span>
             </div>
 
-            <p className="text-xs text-[#9ca3af]">
-              Second-hand items have single-unit stock (<code className="text-white">stock = 1</code>). Once sold, items automatically transition to <strong className="text-white">SOLD</strong> status.
-            </p>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+                <span className="text-[10px] uppercase font-mono text-[#9ca3af] block">Checkout Initiated</span>
+                <span className="font-mono text-xl font-bold text-white mt-1 block">{checkout?.initiated || 0}</span>
+              </div>
+              <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+                <span className="text-[10px] uppercase font-mono text-[#9ca3af] block">Confirmed Sales</span>
+                <span className="font-mono text-xl font-bold text-[#25D366] mt-1 block">{checkout?.confirmedSales || 0}</span>
+              </div>
+            </div>
 
-            <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626] space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#9ca3af]">Total Products:</span>
-                <span className="font-mono text-white font-bold">{overview?.products?.total}</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#9ca3af]">Available for Purchase:</span>
-                <span className="font-mono text-emerald-400 font-bold">{overview?.products?.available}</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#9ca3af]">Items Sold:</span>
-                <span className="font-mono text-[#f472b6] font-bold">{overview?.products?.sold}</span>
-              </div>
+            <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626] flex items-center justify-between text-xs">
+              <span className="text-[#9ca3af]">Confirmation Rate:</span>
+              <span className="font-mono font-bold text-white">{checkout?.confirmationRate || 0}%</span>
             </div>
           </div>
 
           <Link
-            href="/admin/inventory"
-            className="w-full py-2.5 px-4 bg-[#1a1a1a] hover:bg-[#222222] border border-[#2a2a2a] text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-between group"
+            href="/admin/orders"
+            className="w-full py-2.5 px-4 bg-[#1a1a1a] hover:bg-[#222222] border border-[#2a2a2a] text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-between group mt-4"
           >
-            <span>Manage Inventory Stock</span>
+            <span>Manage Orders & Confirm Sales</span>
             <ArrowRight className="w-4 h-4 text-[#f472b6] group-hover:translate-x-1 transition-transform" />
           </Link>
+        </div>
+      </div>
+
+      {/* Sales Overview Section */}
+      <div className="p-6 rounded-xl bg-[#141414] border border-[#262626] space-y-4">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider border-b border-[#222222] pb-3">
+          Sales Overview
+        </h3>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+          <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+            <span className="text-[10px] font-mono text-[#9ca3af] block">Pending</span>
+            <span className="font-mono text-lg font-bold text-amber-400 mt-1 block">{orders?.pendingConfirmation || 0}</span>
+          </div>
+          <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+            <span className="text-[10px] font-mono text-[#9ca3af] block">Confirmed</span>
+            <span className="font-mono text-lg font-bold text-emerald-400 mt-1 block">{orders?.confirmed || 0}</span>
+          </div>
+          <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+            <span className="text-[10px] font-mono text-[#9ca3af] block">Processing</span>
+            <span className="font-mono text-lg font-bold text-blue-400 mt-1 block">{orders?.processing || 0}</span>
+          </div>
+          <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+            <span className="text-[10px] font-mono text-[#9ca3af] block">Shipped</span>
+            <span className="font-mono text-lg font-bold text-purple-400 mt-1 block">{orders?.shipped || 0}</span>
+          </div>
+          <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+            <span className="text-[10px] font-mono text-[#9ca3af] block">Delivered</span>
+            <span className="font-mono text-lg font-bold text-[#f472b6] mt-1 block">{orders?.delivered || 0}</span>
+          </div>
+          <div className="p-3.5 rounded-lg bg-[#181818] border border-[#262626]">
+            <span className="text-[10px] font-mono text-[#9ca3af] block">Cancelled</span>
+            <span className="font-mono text-lg font-bold text-[#6b7280] mt-1 block">{orders?.cancelled || 0}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Orders Overview */}
+      <div className="p-6 rounded-xl bg-[#141414] border border-[#262626] space-y-4">
+        <div className="flex items-center justify-between border-b border-[#222222] pb-3">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            Recent Orders
+          </h3>
+          <Link href="/admin/orders" className="text-xs text-[#f472b6] hover:underline font-semibold">
+            View All Orders →
+          </Link>
+        </div>
+
+        <div className="text-center py-10 text-xs text-[#6b7280]">
+          No orders yet.
         </div>
       </div>
     </div>

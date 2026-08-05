@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import { OrderStatus, PaymentStatus, EventType } from "@prisma/client";
+import { OrderStatus } from "@prisma/client";
 
 export interface DateRangeFilter {
   startDate?: Date;
@@ -36,129 +36,118 @@ export function getDateRangeFromPreset(preset: string = "30d"): { startDate: Dat
 }
 
 /**
+  Confirmed Sales Statuses: CONFIRMED, PROCESSING, SHIPPED, DELIVERED
+ */
+const CONFIRMED_SALE_STATUSES: OrderStatus[] = [
+  OrderStatus.CONFIRMED,
+  OrderStatus.PROCESSING,
+  OrderStatus.SHIPPED,
+  OrderStatus.DELIVERED,
+];
+
+/**
  * Calculates Dashboard Overview KPIs strictly from Neon DB records.
  */
 export async function getDashboardOverviewStats() {
   const now = new Date();
-
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-  // Revenue computations
-  const [todayRev, weekRev, monthRev, yearRev, prevMonthRev] = await Promise.all([
-    prisma.order.aggregate({
-      where: { paymentStatus: PaymentStatus.PAID, createdAt: { gte: startOfToday } },
-      _sum: { totalAmount: true },
-    }),
-    prisma.order.aggregate({
-      where: { paymentStatus: PaymentStatus.PAID, createdAt: { gte: startOfWeek } },
-      _sum: { totalAmount: true },
-    }),
-    prisma.order.aggregate({
-      where: { paymentStatus: PaymentStatus.PAID, createdAt: { gte: startOfMonth } },
-      _sum: { totalAmount: true },
-    }),
-    prisma.order.aggregate({
-      where: { paymentStatus: PaymentStatus.PAID, createdAt: { gte: startOfYear } },
-      _sum: { totalAmount: true },
-    }),
-    prisma.order.aggregate({
-      where: {
-        paymentStatus: PaymentStatus.PAID,
-        createdAt: {
-          gte: new Date(now.getFullYear(), now.getMonth() - 1, 1),
-          lt: startOfMonth,
-        },
-      },
-      _sum: { totalAmount: true },
-    }),
+  // 1. Fetch all confirmed sales orders with their items to compute Revenue & COGS
+  const confirmedOrders = await prisma.order.findMany({
+    where: {
+      status: { in: CONFIRMED_SALE_STATUSES },
+    },
+    include: {
+      items: true,
+    },
+  });
+
+  let totalRevenue = 0;
+  let totalCOGS = 0;
+  let totalDiscounts = 0;
+
+  confirmedOrders.forEach((ord) => {
+    totalRevenue += ord.subtotal || ord.totalAmount || 0;
+    totalDiscounts += ord.discountAmount || 0;
+    ord.items.forEach((item) => {
+      totalCOGS += (item.costPrice || 15.0) * item.quantity;
+    });
+  });
+
+  const grossProfit = totalRevenue - totalCOGS;
+
+  // 2. Fetch Operating Expenses from Expense model
+  const expenseAgg = await prisma.expense.aggregate({
+    _sum: { amount: true },
+  });
+  const operatingExpenses = expenseAgg._sum.amount || 0;
+
+  // 3. Net Profit & Margin
+  const netProfit = grossProfit - operatingExpenses - totalDiscounts;
+  const profitMargin = totalRevenue > 0 ? Number(((netProfit / totalRevenue) * 100).toFixed(1)) : 0;
+
+  // 4. Order Status Breakdown
+  const [
+    totalOrdersCount,
+    pendingConfirmationCount,
+    confirmedCount,
+    processingCount,
+    shippedCount,
+    deliveredCount,
+    cancelledCount,
+  ] = await Promise.all([
+    prisma.order.count(),
+    prisma.order.count({ where: { status: OrderStatus.PENDING_CONFIRMATION } }),
+    prisma.order.count({ where: { status: OrderStatus.CONFIRMED } }),
+    prisma.order.count({ where: { status: OrderStatus.PROCESSING } }),
+    prisma.order.count({ where: { status: OrderStatus.SHIPPED } }),
+    prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
+    prisma.order.count({ where: { status: OrderStatus.CANCELLED } }),
   ]);
 
-  const currentMonthRevenue = monthRev._sum.totalAmount || 0;
-  const previousMonthRevenue = prevMonthRev._sum.totalAmount || 0;
-  const revenueGrowthPercentage =
-    previousMonthRevenue > 0
-      ? Number((((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100).toFixed(1))
-      : 0;
+  const confirmedSalesCount = confirmedCount + processingCount + shippedCount + deliveredCount;
 
-  // Order Counts
-  const [todayOrdersCount, pendingOrdersCount, processingOrdersCount, shippedOrdersCount, deliveredOrdersCount, cancelledOrdersCount] =
-    await Promise.all([
-      prisma.order.count({ where: { createdAt: { gte: startOfToday } } }),
-      prisma.order.count({ where: { status: OrderStatus.PENDING } }),
-      prisma.order.count({ where: { status: OrderStatus.PROCESSING } }),
-      prisma.order.count({ where: { status: OrderStatus.SHIPPED } }),
-      prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),
-      prisma.order.count({ where: { status: OrderStatus.CANCELLED } }),
-    ]);
+  // 5. Checkout Conversion Metrics
+  const checkoutInitiatedCount = await prisma.checkoutEvent.count();
+  const confirmationRate =
+    checkoutInitiatedCount > 0 ? Number(((confirmedSalesCount / checkoutInitiatedCount) * 100).toFixed(1)) : 0;
 
-  // Customer Counts
-  const [totalCustomersCount, newCustomersCount] = await Promise.all([
+  // 6. Product Inventory & Customer Counts
+  const [totalProductsCount, totalCustomersCount] = await Promise.all([
+    prisma.product.count({ where: { status: { not: "ARCHIVED" } } }),
     prisma.customer.count(),
-    prisma.customer.count({ where: { createdAt: { gte: startOfMonth } } }),
   ]);
-
-  // Product Inventory Counts
-  const [totalProductsCount, availableProductsCount, soldProductsCount, lowStockProductsCount, outOfStockProductsCount] =
-    await Promise.all([
-      prisma.product.count({ where: { status: { not: "ARCHIVED" } } }),
-      prisma.product.count({ where: { stock: { gt: 1 }, status: "PUBLISHED" } }),
-      prisma.product.count({ where: { status: "SOLD" } }),
-      prisma.product.count({ where: { stock: 1, status: "PUBLISHED" } }),
-      prisma.product.count({ where: { stock: 0 } }),
-    ]);
-
-  // First-party Analytics Funnel Events
-  const [visitorsCount, productViewsCount, addToCartCount, checkoutStartedCount, completedPurchasesCount] =
-    await Promise.all([
-      prisma.analyticsEvent.groupBy({ by: ["sessionId"], _count: { sessionId: true } }).then((res) => res.length),
-      prisma.analyticsEvent.count({ where: { eventType: EventType.PRODUCT_VIEW } }),
-      prisma.analyticsEvent.count({ where: { eventType: EventType.ADD_TO_CART } }),
-      prisma.analyticsEvent.count({ where: { eventType: EventType.CHECKOUT_STARTED } }),
-      prisma.analyticsEvent.count({ where: { eventType: EventType.PURCHASE } }),
-    ]);
-
-  const conversionRate =
-    visitorsCount > 0 ? Number(((completedPurchasesCount / visitorsCount) * 100).toFixed(2)) : 0;
 
   return {
-    revenue: {
-      today: todayRev._sum.totalAmount || 0,
-      week: weekRev._sum.totalAmount || 0,
-      month: currentMonthRevenue,
-      year: yearRev._sum.totalAmount || 0,
-      growthPercentage: revenueGrowthPercentage,
+    financial: {
+      revenue: totalRevenue,
+      cogs: totalCOGS,
+      grossProfit,
+      operatingExpenses,
+      netProfit,
+      profitMargin,
     },
     orders: {
-      today: todayOrdersCount,
-      pending: pendingOrdersCount,
-      processing: processingOrdersCount,
-      shipped: shippedOrdersCount,
-      delivered: deliveredOrdersCount,
-      cancelled: cancelledOrdersCount,
-      total: todayOrdersCount + pendingOrdersCount + processingOrdersCount + shippedOrdersCount + deliveredOrdersCount,
+      total: totalOrdersCount,
+      confirmedSales: confirmedSalesCount,
+      pendingConfirmation: pendingConfirmationCount,
+      confirmed: confirmedCount,
+      processing: processingCount,
+      shipped: shippedCount,
+      delivered: deliveredCount,
+      cancelled: cancelledCount,
     },
-    customers: {
-      total: totalCustomersCount,
-      newThisMonth: newCustomersCount,
-      returning: Math.max(0, totalCustomersCount - newCustomersCount),
+    checkout: {
+      initiated: checkoutInitiatedCount,
+      confirmedSales: confirmedSalesCount,
+      confirmationRate,
     },
     products: {
       total: totalProductsCount,
-      available: availableProductsCount,
-      sold: soldProductsCount,
-      lowStock: lowStockProductsCount,
-      outOfStock: outOfStockProductsCount,
     },
-    conversion: {
-      visitors: visitorsCount,
-      productViews: productViewsCount,
-      addToCart: addToCartCount,
-      checkoutStarted: checkoutStartedCount,
-      completedPurchases: completedPurchasesCount,
-      rate: conversionRate,
+    customers: {
+      total: totalCustomersCount,
     },
   };
 }
@@ -171,7 +160,7 @@ export async function getRevenueTimelineData(preset: string = "30d") {
 
   const orders = await prisma.order.findMany({
     where: {
-      paymentStatus: PaymentStatus.PAID,
+      status: { in: CONFIRMED_SALE_STATUSES },
       createdAt: { gte: startDate, lte: endDate },
     },
     select: {
@@ -181,10 +170,8 @@ export async function getRevenueTimelineData(preset: string = "30d") {
     orderBy: { createdAt: "asc" },
   });
 
-  // Group by date (YYYY-MM-DD)
   const grouped: Record<string, { date: string; revenue: number; ordersCount: number }> = {};
 
-  // Pre-fill date slots
   const curr = new Date(startDate);
   while (curr <= endDate) {
     const key = curr.toISOString().split("T")[0];

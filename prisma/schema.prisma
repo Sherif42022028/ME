@@ -29,6 +29,7 @@ enum ProductStatus {
 }
 
 enum OrderStatus {
+  PENDING_CONFIRMATION
   PENDING
   CONFIRMED
   PROCESSING
@@ -138,7 +139,8 @@ model Product {
   brand        String
   categoryId   String
   category     Category         @relation(fields: [categoryId], references: [id])
-  price        Float
+  price        Float            @default(40.0)
+  costPrice    Float            @default(15.0)
   size         String
   color        String
   condition    ProductCondition @default(EXCELLENT)
@@ -150,13 +152,13 @@ model Product {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
-  imagesList    ProductImage[]
+  imagesList       ProductImage[]
   measurementsList ProductMeasurement[]
-  orderItems    OrderItem[]
-  cartItems     CartItem[]
-  wishlistItems WishlistItem[]
-  analytics     AnalyticsEvent[]
-  inventoryLogs InventoryLog[]
+  orderItems       OrderItem[]
+  cartItems        CartItem[]
+  wishlistItems    WishlistItem[]
+  analytics        AnalyticsEvent[]
+  inventoryLogs    InventoryLog[]
 
   @@index([slug])
   @@index([sku])
@@ -229,8 +231,10 @@ model Order {
   totalAmount     Float
   subtotal        Float
   shippingFee     Float         @default(0)
+  shippingCost    Float         @default(0)
   discountAmount  Float         @default(0)
-  status          OrderStatus   @default(PENDING)
+  currency        String        @default("PHP")
+  status          OrderStatus   @default(PENDING_CONFIRMATION)
   paymentStatus   PaymentStatus @default(PENDING)
   shippingAddress Json
   trackingNumber  String?
@@ -238,10 +242,10 @@ model Order {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
-  items        OrderItem[]
+  items         OrderItem[]
   statusHistory OrderStatusHistory[]
-  payments     Payment[]
-  shippings    Shipping[]
+  payments      Payment[]
+  shippings     Shipping[]
 
   @@index([orderNumber])
   @@index([customerId])
@@ -257,6 +261,7 @@ model OrderItem {
   product   Product  @relation(fields: [productId], references: [id])
   quantity  Int      @default(1)
   price     Float
+  costPrice Float    @default(15.0)
   createdAt DateTime @default(now())
 
   @@index([orderId])
@@ -322,6 +327,30 @@ model Discount {
   createdAt       DateTime     @default(now())
 
   @@index([code])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   @default("OTHER") // SHIPPING, PACKAGING, MARKETING, PLATFORM, OTHER
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+  @@index([date])
+}
+
+model CheckoutEvent {
+  id        String   @id @default(cuid())
+  orderId   String?
+  sessionId String
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([orderId])
+  @@index([createdAt])
 }
 
 model Cart {

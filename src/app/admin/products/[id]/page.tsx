@@ -19,7 +19,8 @@ export default function EditProductPage() {
     name: "",
     brand: "",
     categoryId: "",
-    price: "",
+    price: "40",
+    costPrice: "15",
     size: "",
     color: "",
     condition: "EXCELLENT",
@@ -27,6 +28,7 @@ export default function EditProductPage() {
     stock: "1",
     description: "",
     status: "PUBLISHED",
+    images: [] as string[],
   });
 
   const fetchProduct = async () => {
@@ -40,7 +42,8 @@ export default function EditProductPage() {
           name: p.name,
           brand: p.brand,
           categoryId: p.categoryId,
-          price: p.price.toString(),
+          price: (p.price || 40).toString(),
+          costPrice: (p.costPrice || 15).toString(),
           size: p.size,
           color: p.color,
           condition: p.condition,
@@ -48,6 +51,7 @@ export default function EditProductPage() {
           stock: p.stock.toString(),
           description: p.description,
           status: p.status,
+          images: p.images || [],
         });
       }
     } catch (e) {
@@ -72,9 +76,10 @@ export default function EditProductPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          price: parseFloat(form.price),
+          price: parseFloat(form.price) || 40.0,
+          costPrice: parseFloat(form.costPrice) || 15.0,
           stock: parseInt(form.stock),
-          images: ["https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"],
+          images: form.images.length > 0 ? form.images : ["/product/p1.jpg"],
         }),
       });
 
@@ -175,11 +180,22 @@ export default function EditProductPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-[#9ca3af] mb-2">Price in PHP (₱)</label>
+            <label className="block text-xs font-bold uppercase text-[#9ca3af] mb-2">Selling Price in PHP (₱)</label>
             <input
               type="number"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
+              required
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3 text-xs text-white focus:outline-none focus:border-[#f472b6] font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase text-[#9ca3af] mb-2">Cost Price (COGS) in PHP (₱)</label>
+            <input
+              type="number"
+              value={form.costPrice}
+              onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
               required
               className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3 text-xs text-white focus:outline-none focus:border-[#f472b6] font-mono"
             />

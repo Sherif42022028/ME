@@ -86,7 +86,7 @@ export default function OrderDetailPage() {
   }
 
   const statuses = [
-    "PENDING",
+    "PENDING_CONFIRMATION",
     "CONFIRMED",
     "PROCESSING",
     "SHIPPED",
@@ -95,6 +95,30 @@ export default function OrderDetailPage() {
     "CANCELLED",
     "REFUNDED",
   ];
+
+  const handleQuickConfirm = async () => {
+    setUpdating(true);
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "CONFIRMED",
+          note: "Order confirmed by admin via WhatsApp verification",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOrder(data.order);
+        setNewStatus("CONFIRMED");
+        fetchOrder();
+      }
+    } catch (err) {
+      console.error("Confirm error:", err);
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -120,6 +144,29 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Pending Confirmation Callout */}
+      {order.status === "PENDING_CONFIRMATION" && (
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <Clock className="w-5 h-5 text-amber-400 shrink-0" />
+            <div>
+              <p className="text-xs font-bold text-amber-300">Pending Order Confirmation</p>
+              <p className="text-[11px] text-[#9ca3af]">
+                Customer submitted checkout and was redirected to WhatsApp. Click Confirm Order to record this as an active Sale.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleQuickConfirm}
+            disabled={updating}
+            className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs uppercase tracking-wider rounded-lg transition-colors shrink-0 flex items-center space-x-2"
+          >
+            <CheckCircle className="w-4 h-4 text-black" />
+            <span>CONFIRM ORDER</span>
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Items & Customer Details */}

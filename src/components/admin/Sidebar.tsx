@@ -58,7 +58,6 @@ export function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarProps) {
     {
       group: "COMMUNICATION",
       items: [
-        { name: "WhatsApp", href: "/admin/communication/whatsapp", icon: MessageSquare, badge: "Live" },
         { name: "Notifications", href: "/admin/communication/notifications", icon: Bell },
       ],
     },
@@ -118,6 +117,8 @@ export function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarProps) {
                 const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
                 const Icon = item.icon;
 
+                const badge = (item as any).badge;
+
                 return (
                   <Link
                     key={item.href}
@@ -134,9 +135,9 @@ export function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarProps) {
                       <Icon className={cn("w-4 h-4 transition-colors", isActive ? "text-[#f472b6]" : "text-[#6b7280] group-hover:text-white")} />
                       <span>{item.name}</span>
                     </div>
-                    {item.badge && (
+                    {badge && (
                       <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase rounded bg-[#f472b6]/20 text-[#f472b6] border border-[#f472b6]/30">
-                        {item.badge}
+                        {badge}
                       </span>
                     )}
                   </Link>

@@ -13,8 +13,9 @@ export default function NewProductPage() {
   const [form, setForm] = useState({
     name: "",
     brand: "",
-    categoryId: "dresses-gowns", // Default
-    price: "",
+    categoryId: "dresses-gowns",
+    price: "40",
+    costPrice: "15",
     size: "S",
     color: "Black",
     condition: "EXCELLENT",
@@ -37,9 +38,10 @@ export default function NewProductPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          price: parseFloat(form.price),
+          price: parseFloat(form.price) || 40.0,
+          costPrice: parseFloat(form.costPrice) || 15.0,
           stock: parseInt(form.stock),
-          images: [form.imageUrl || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80"],
+          images: [form.imageUrl || "/product/p1.jpg"],
           categoryId: form.categoryId || "cl_cat_1",
         }),
       });
@@ -125,12 +127,24 @@ export default function NewProductPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-[#9ca3af] mb-2">Price in PHP (₱)</label>
+            <label className="block text-xs font-bold uppercase text-[#9ca3af] mb-2">Selling Price in PHP (₱)</label>
             <input
               type="number"
-              placeholder="28500"
+              placeholder="40"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
+              required
+              className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3 text-xs text-white focus:outline-none focus:border-[#f472b6] font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase text-[#9ca3af] mb-2">Cost Price (COGS) in PHP (₱)</label>
+            <input
+              type="number"
+              placeholder="15"
+              value={form.costPrice}
+              onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
               required
               className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3 text-xs text-white focus:outline-none focus:border-[#f472b6] font-mono"
             />

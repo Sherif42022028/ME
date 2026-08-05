@@ -1,10 +1,10 @@
-import { PrismaClient, Role, ProductCondition, ProductStatus, OrderStatus, PaymentStatus, EventType, MessageSender, MessageStatus, ConversationStatus } from "@prisma/client";
+import { PrismaClient, Role, ProductCondition, ProductStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Starting Neon PostgreSQL database seed for ME (Micaela Ella) with local /product assets...");
+  console.log("🌱 Seeding Neon PostgreSQL database for ME (Mica Ella)...");
 
   // 1. Initial Admin User from Environment Variables
   const adminEmail = (process.env.ADMIN_EMAIL || "micaela.ella.admin@gmail.com").trim().toLowerCase();
@@ -28,7 +28,7 @@ async function main() {
 
   console.log(`✅ Admin account configured: ${admin.email}`);
 
-  // 2. Categories with local images from /product
+  // 2. Categories
   const categoriesData = [
     { name: "Dresses & Gowns", slug: "dresses-gowns", description: "Curated pre-loved evening dresses, gowns, and silk slips.", image: "/product/p5.jpg" },
     { name: "Luxury Bags", slug: "luxury-bags", description: "Authenticated designer handbags and leather totes.", image: "/product/p3.jpg" },
@@ -47,7 +47,7 @@ async function main() {
     categories.push(created);
   }
 
-  // 3. Products using /product/p1.jpg through /product/p12.jpg
+  // 3. Products with price = 40 PHP and costPrice = 15 PHP
   const productsData = [
     {
       name: "Vintage Chanel Tweed Structured Blazer",
@@ -55,7 +55,8 @@ async function main() {
       description: "Timeless Chanel black tweed jacket with gold lion buttons. 100% wool exterior with silk camellia lining. Exceptional condition.",
       brand: "Chanel",
       categoryId: categories[2].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "S / EU 36",
       color: "Black & Gold",
       condition: ProductCondition.EXCELLENT,
@@ -71,7 +72,8 @@ async function main() {
       description: "Iconic Jacquemus signature bag in soft blush pink smooth calfskin. Includes detachable shoulder strap and original dust bag.",
       brand: "Jacquemus",
       categoryId: categories[1].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "One Size",
       color: "Blush Pink",
       condition: ProductCondition.LIKE_NEW,
@@ -87,7 +89,8 @@ async function main() {
       description: "Ethereal Zimmermann 100% silk chiffon midi dress with delicate botanical floral print and waist cutouts.",
       brand: "Zimmermann",
       categoryId: categories[0].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "M / US 6",
       color: "Floral Cream",
       condition: ProductCondition.EXCELLENT,
@@ -103,7 +106,8 @@ async function main() {
       description: "Classic YSL pointed-toe slingback heels in supple Italian patent leather. 85mm stiletto heel.",
       brand: "Saint Laurent",
       categoryId: categories[4].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "EU 38 / US 7.5",
       color: "Black",
       condition: ProductCondition.GOOD,
@@ -119,7 +123,8 @@ async function main() {
       description: "Rare 2000s John Galliano era Christian Dior Oblique canvas mini bag with patent leather trim.",
       brand: "Dior",
       categoryId: categories[1].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "One Size",
       color: "Navy & Beige",
       condition: ProductCondition.EXCELLENT,
@@ -135,7 +140,8 @@ async function main() {
       description: "Bespoke vintage satin corset with boning and lace-up back tie. Flattering hourglass silhouette.",
       brand: "Mica Ella Archive",
       categoryId: categories[3].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "XS / S",
       color: "Champagne Gold",
       condition: ProductCondition.LIKE_NEW,
@@ -150,7 +156,8 @@ async function main() {
       description: "Classic Tessuto Prada black nylon backpack with enamel triangle logo. Purchased in Milan.",
       brand: "Prada",
       categoryId: categories[1].id,
-      price: 40,
+      price: 40.0,
+      costPrice: 15.0,
       size: "One Size",
       color: "Black",
       condition: ProductCondition.EXCELLENT,
@@ -161,111 +168,23 @@ async function main() {
     },
   ];
 
-  const products = [];
   for (const prod of productsData) {
-    const created = await prisma.product.upsert({
+    await prisma.product.upsert({
       where: { slug: prod.slug },
       update: prod,
       create: prod,
     });
-    products.push(created);
   }
-  console.log(`✅ Created ${products.length} products using /product images.`);
+  console.log(`✅ Configured ${productsData.length} products with price = ₱40 and costPrice = ₱15.`);
 
-  // 4. Customers
-  const customersData = [
-    { name: "Camille Co", email: "camille.co@gmail.com", phone: "+639171234567" },
-    { name: "Beatriz Alonzo", email: "beatriz.a@yahoo.com", phone: "+639189876543" },
-    { name: "Janine Gutierrez", email: "janine.g@outlook.com", phone: "+639205551234" },
-    { name: "Isabelle Daza", email: "isabelle.daza@gmail.com", phone: "+639178889900" },
-    { name: "Patricia Prieto", email: "patricia.p@gmail.com", phone: "+639994443322" },
-  ];
-
-  const customers = [];
-  for (const cust of customersData) {
-    const created = await prisma.customer.upsert({
-      where: { email: cust.email },
-      update: cust,
-      create: cust,
-    });
-    customers.push(created);
-  }
-
-  // 5. Orders & Status History
-  const now = new Date();
-  const daysAgo = (d: number) => new Date(now.getTime() - d * 24 * 60 * 60 * 1000);
-
-  const ordersData = [
-    {
-      orderNumber: "ME-2026-1001",
-      customerId: customers[0].id,
-      totalAmount: 28950,
-      subtotal: 28500,
-      shippingFee: 450,
-      discountAmount: 0,
-      status: OrderStatus.DELIVERED,
-      paymentStatus: PaymentStatus.PAID,
-      shippingAddress: { addressLine1: "123 Forbes Park", city: "Makati City", province: "Metro Manila", postalCode: "1219", country: "Philippines" },
-      trackingNumber: "JT-PH-9988771",
-      createdAt: daysAgo(5),
-      productId: products[0].id,
-      price: 28500,
-    },
-    {
-      orderNumber: "ME-2026-1002",
-      customerId: customers[1].id,
-      totalAmount: 19350,
-      subtotal: 18900,
-      shippingFee: 450,
-      discountAmount: 0,
-      status: OrderStatus.SHIPPED,
-      paymentStatus: PaymentStatus.PAID,
-      shippingAddress: { addressLine1: "45 Corinthian Gardens", city: "Quezon City", province: "Metro Manila", postalCode: "1110", country: "Philippines" },
-      trackingNumber: "LLM-882233",
-      createdAt: daysAgo(2),
-      productId: products[1].id,
-      price: 18900,
-    },
-  ];
-
-  for (const ord of ordersData) {
-    const { productId, price, ...orderFields } = ord;
-
-    const existingOrder = await prisma.order.findUnique({
-      where: { orderNumber: ord.orderNumber },
-    });
-
-    if (!existingOrder) {
-      await prisma.order.create({
-        data: {
-          ...orderFields,
-          items: {
-            create: [
-              {
-                productId,
-                quantity: 1,
-                price,
-              },
-            ],
-          },
-          statusHistory: {
-            create: [
-              {
-                status: ord.status,
-                note: `Order initial status set to ${ord.status}`,
-                createdBy: admin.id,
-              },
-            ],
-          },
-        },
-      });
-    }
-  }
-
-  // 6. Founder Profile with /CEO pic.png
+  // 4. Founder Profile
   await prisma.founderProfile.upsert({
     where: { id: "founder-micaela" },
-    update: { name: "Mica Ella", bio: "Mica Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.", image: "/CEO pic.png" },
+    update: {
+      name: "Mica Ella",
+      bio: "Mica Ella is a Manila-based fashion curator and archivist with a passion for timeless, high-craftsmanship vintage and pre-loved luxury. ME was born out of a desire to redefine sustainable luxury fashion in the Philippines.",
+      image: "/CEO pic.png",
+    },
     create: {
       id: "founder-micaela",
       name: "Mica Ella",
@@ -281,7 +200,7 @@ async function main() {
     },
   });
 
-  console.log("🎉 Database seeding with local assets completed!");
+  console.log("🎉 Database seeding completed with zero demo orders for clean production deployment!");
 }
 
 main()
