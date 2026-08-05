@@ -78,6 +78,13 @@ export default function ProductsPage() {
             <span>Export CSV</span>
           </button>
           <Link
+            href="/admin/products/import"
+            className="px-3.5 py-2 bg-[#181818] border border-[#2a2a2a] hover:border-[#333333] text-white text-xs font-semibold rounded-lg transition-colors flex items-center space-x-2"
+          >
+            <Package className="w-4 h-4 text-[#f472b6]" />
+            <span>Import Asset Folder</span>
+          </Link>
+          <Link
             href="/admin/products/new"
             className="px-4 py-2 bg-[#f472b6] hover:bg-[#db2777] text-black font-bold text-xs rounded-lg transition-colors flex items-center space-x-2"
           >

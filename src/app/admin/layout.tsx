@@ -7,10 +7,11 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Server-side Route Authorization Protection
   const session = await getSession();
+
+  // Server-side Route Authorization Protection
   if (!session || (session.role !== "ADMIN" && session.role !== "STAFF")) {
-    redirect("/login");
+    redirect("/admin/login");
   }
 
   return <AdminLayoutClient>{children}</AdminLayoutClient>;
