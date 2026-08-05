@@ -25,7 +25,7 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const isSold = product.status === "SOLD" || product.stock === 0;
+  const isSold = false; // Keep products visible and purchasable
   const whatsappNumber = process.env.WHATSAPP_PHONE_NUMBER || "+639999680628";
   const formattedPhone = whatsappNumber.replace(/[^0-9]/g, "");
 

@@ -17,7 +17,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const isSold = product.status === "SOLD" || product.stock === 0;
+  const isSold = false; // Products remain visible and purchasable
 
   const getConditionBadge = (cond: string) => {
     switch (cond) {
